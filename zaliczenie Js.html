@@ -101,7 +101,8 @@
         let wzrostOk = false;
         let historiaElement = document.querySelector(".historia");
         let sredniaBMIelement = document.querySelector(".sredniaBMI");
-        
+        let sredniaBMI = 0;
+        let sumaBMI = 0;
         
         let nowyDiv = document.createElement("div");
         let nowyPrzycisk = document.createElement("button");
@@ -133,7 +134,7 @@
          }
 
         if (wagaOk === true && wzrostOk === true){
-            let bmiElement = waga / ((wzrost/100)*2);
+            let bmiElement = wagaElement.value / ((wzrostElement.value /100)*2);
             let BMI = Math.round((bmiElement*100))/100;
             let wynikBMI = {
             waga: waga,
@@ -144,8 +145,8 @@
             twojeBMI.innerHTML= BMI;
             twojWzrost.innerHTML = wzrost + " cm";
             twojaWaga.innerHTML = waga + " kg"; 
-            historia.push(wynikBMI);
             listaBMI.push(BMI);
+            historia.push(wynikBMI);
             console.log(historia);
             console.log(listaBMI);
 
@@ -161,11 +162,20 @@
         }
         }
         } 
-           
+            wagaElement.value = "";
+            wzrostElement.value = "";
             nowyPrzycisk.innerHTML = data;
             nowyDiv.appendChild(nowyPrzycisk);
             historiaElement.appendChild(nowyDiv);
-          
+            nowyPrzycisk.addEventListener("click", function(){
+                twojaWaga.innerHTML = historia[nowyLicznik - 1].waga + "kg";
+                twojWzrost.innerHTML = historia[nowyLicznik - 1].wzrost + "cm";
+                twojeBMI.innerHTML = historia[nowyLicznik - 1].BMI;
+                komunikat2.innerHTML = "";
+                komunikat1.innerHTML = "";
+            })
+            
+            
 
         } else {
             wagaElement.value = "";
@@ -176,11 +186,14 @@
         }
         
         
-        
-
+        for ( let i=0; i<listaBMI.length; i++){ 
+            sumaBMI = sumaBMI + listaBMI[i];
     }  
+        sredniaBMI = sumaBMI / listaBMI.length;
+        sredniaBMIelement.innerHTML = sredniaBMI;
+        console.log(sredniaBMI);
 
-    
+    }
 
     zatwierdz.addEventListener("click", obliczBMI);
 
