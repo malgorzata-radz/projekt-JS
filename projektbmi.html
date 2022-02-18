@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #f3d5c0;
+        color: #506d84;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+      }
+
+      .flex-container {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .header {
+        text-align: center;
+        color: #889eaf;
+        font-size: 40px;
+      }
+
+      .flex-item {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        width: 30%;
+        height: auto;
+        border: 3px solid white;
+        background-color: #f3d5c0;
+      }
+
+      .przycisk1 {
+        background-color: #d4b499;
+        color: #506d84;
+        text-align: center;
+        border-color: white;
+      }
+
+      .przycisk2 {
+        background-color: #d4b499;
+        color: #506d84;
+        text-align: center;
+        border-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="header">Kalkulator BMI</h1>
+
+    <div class="flex-container">
+      <div class="flex-item">
+        Waga w kg:
+        <input type="number" class="waga" min="40" max="200" />
+        Wzrost w cm:
+        <input type="number" class="wzrost" min="120" max="240" />
+        <br />
+        <button class="przycisk1">zatwierdź</button>
+      </div>
+
+      <div class="flex-item">
+        <div class="komunikat1"></div>
+        <div class="komunikat2"></div>
+        <br />
+        <div>Twój wzrost to: <span class="wzrostBMI"></span></div>
+        <div>Twoja waga to: <span class="wagaBMI"></span></div>
+        <div>Twoje BMI to: <span class="BMI"></span></div>
+      </div>
+
+      <div class="flex-item">
+        <div class="historia"></div>
+        <br />
+        <div>Twoje średnie BMI to: <span class="sredniaBMI"></span></div>
+        <br />
+        <button class="przycisk2">wyczyść</button>
+      </div>
+    </div>
+    <script>
+      let zatwierdz = document.querySelector(".przycisk1");
+      let wyczysc = document.querySelector(".przycisk2");
+      let historiaElement = document.querySelector(".historia");
+      let sredniaBMIelement = document.querySelector(".sredniaBMI");
+      let licznik = 0;
+      let historiaString = localStorage.getItem("historiaBMI");
+      let historia = [];
+      let twojWzrost = document.querySelector(".wzrostBMI");
+      let twojaWaga = document.querySelector(".wagaBMI");
+      let twojeBMI = document.querySelector(".BMI");
+      if (historiaString !== null) {
+        historia = JSON.parse(historiaString);
+        console.log(historia);
+        for (let item of historia) {
+          let index = historia.indexOf(item);
+          let nowyDiv = document.createElement("div");
+          let nowyPrzycisk = document.createElement("button");
+          nowyPrzycisk.innerHTML = item.data;
+          nowyDiv.appendChild(nowyPrzycisk);
+          historiaElement.appendChild(nowyDiv);
+          nowyPrzycisk.addEventListener("click", function () {
+            twojaWaga.innerHTML = historia[index].waga + "kg";
+            twojWzrost.innerHTML = historia[index].wzrost + "cm";
+            twojeBMI.innerHTML = historia[index].BMI;
+            komunikat2.innerHTML = "";
+            komunikat1.innerHTML = "";
+          });
+        }
+      }
+
+      function obliczBMI() {
+        licznik = licznik + 1;
+        let nowyLicznik = licznik;
+        let data = new Date().toString();
+        let wagaElement = document.querySelector(".waga");
+        let wzrostElement = document.querySelector(".wzrost");
+        let waga = parseFloat(wagaElement.value);
+        let wzrost = parseFloat(wzrostElement.value);
+        let komunikat1 = document.querySelector(".komunikat1");
+        let komunikat2 = document.querySelector(".komunikat2");
+
+        let wagaOk = false;
+        let wzrostOk = false;
+        let sredniaBMI = 0;
+        let sumaBMI = 0;
+        let nowyDiv = document.createElement("div");
+        let nowyPrzycisk = document.createElement("button");
+
+        if (isNaN(waga) || isNaN(wzrost)) {
+          alert("Wpisz dane !");
+          return;
+        }
+        if (waga < 40 || waga > 200) {
+          komunikat1.innerHTML = "Twoja waga jest nieprawidłowa!";
+          wagaElement.value = "";
+          wzrostElement.value = "";
+          twojWzrost.innerHTML = "";
+          twojaWaga.innerHTML = "";
+          twojeBMI.innerHTML = "";
+        } else {
+          twojaWaga.innerHTML = waga + " kg";
+          wagaOk = true;
+        }
+
+        if (wzrost < 120 || wzrost > 240) {
+          komunikat1.innerHTML = "Twój wzrost jest niepoprawny!";
+          wagaElement.value = "";
+          wzrostElement.value = "";
+          twojWzrost.innerHTML = "";
+          twojaWaga.innerHTML = "";
+          twojeBMI.innerHTML = "";
+        } else {
+          twojWzrost.innerHTML = wzrost + " cm";
+          wzrostOk = true;
+        }
+
+        if (wagaOk === true && wzrostOk === true) {
+          let bmiElement = waga / ((wzrost / 100) * 2);
+          let BMI = Math.round(bmiElement * 100) / 100;
+          let wynikBMI = {
+            waga: waga,
+            wzrost: wzrost,
+            BMI: BMI,
+            data: data,
+          };
+
+          twojeBMI.innerHTML = BMI;
+          twojWzrost.innerHTML = wzrost + " cm";
+          twojaWaga.innerHTML = waga + " kg";
+
+          historia.push(wynikBMI);
+          console.log(historia);
+          if (historia.length > 1) {
+            if (wagaOk === true && wzrostOk === true) {
+              if (
+                historia[historia.length - 1].BMI <
+                historia[historia.length - 2].BMI
+              ) {
+                komunikat2.innerHTML = "Twoje BMI spadło";
+              } else if (
+                historia[historia.length - 1].BMI >
+                historia[historia.length - 2].BMI
+              ) {
+                komunikat2.innerHTML = "Twoje BMI wzrosło";
+              } else {
+                komunikat2.innerHTML = "Twoje BMI się nie zmieniło";
+              }
+            }
+          }
+          wagaElement.value = "";
+          wzrostElement.value = "";
+          nowyPrzycisk.innerHTML = data;
+          nowyDiv.appendChild(nowyPrzycisk);
+          historiaElement.appendChild(nowyDiv);
+          nowyPrzycisk.addEventListener("click", function () {
+            twojaWaga.innerHTML = historia[nowyLicznik - 1].waga + "kg";
+            twojWzrost.innerHTML = historia[nowyLicznik - 1].wzrost + "cm";
+            twojeBMI.innerHTML = historia[nowyLicznik - 1].BMI;
+            komunikat2.innerHTML = "";
+            komunikat1.innerHTML = "";
+          });
+        } else {
+          wagaElement.value = "";
+          wzrostElement.value = "";
+          twojWzrost.innerHTML = "";
+          twojaWaga.innerHTML = "";
+          twojeBMI.innerHTML = "";
+        }
+
+        for (let item of historia) {
+          sumaBMI = sumaBMI + item.BMI;
+        }
+        sredniaBMI = sumaBMI / historia.length;
+        sredniaBMIelement.innerHTML = sredniaBMI.toFixed(2);
+        console.log(sredniaBMI);
+
+        localStorage.setItem("historiaBMI", JSON.stringify(historia));
+      }
+
+      zatwierdz.addEventListener("click", obliczBMI);
+      wyczysc.addEventListener("click", function () {
+        historia = [];
+        historiaElement.innerHTML = "";
+        sredniaBMIelement.innerHTML = "";
+        localStorage.removeItem("historiaBMI");
+        console.log("wyczyszczony");
+      });
+    </script>
+  </body>
+</html>
