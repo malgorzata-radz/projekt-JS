@@ -80,6 +80,8 @@
 </div>
 <script>
     let zatwierdz = document.querySelector(".przycisk1");
+    let wyczysc = document.querySelector(".przycisk2");
+    let historiaElement = document.querySelector(".historia");
     let licznik = 0;
     let historia = [];
     let listaBMI = [];
@@ -99,7 +101,6 @@
         let twojeBMI = document.querySelector(".BMI");
         let wagaOk = false;
         let wzrostOk = false;
-        let historiaElement = document.querySelector(".historia");
         let sredniaBMIelement = document.querySelector(".sredniaBMI");
         let sredniaBMI = 0;
         let sumaBMI = 0;
@@ -196,7 +197,13 @@
     }
 
     zatwierdz.addEventListener("click", obliczBMI);
-
+    wyczysc.addEventListener("click", function(){
+        console.log("wyczyszczony");
+        historia = "";
+        historiaElement.innerHTML = "";
+        sredniaBMIelement.innerHTML = "";
+        
+    })
     
 </script>
 </body>
