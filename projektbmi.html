@@ -80,6 +80,8 @@
     <script>
       let zatwierdz = document.querySelector(".przycisk1");
       let wyczysc = document.querySelector(".przycisk2");
+      let komunikat1 = document.querySelector(".komunikat1");
+      let komunikat2 = document.querySelector(".komunikat2");
       let historiaElement = document.querySelector(".historia");
       let sredniaBMIelement = document.querySelector(".sredniaBMI");
       let licznik = 0;
@@ -95,7 +97,7 @@
           let index = historia.indexOf(item);
           let nowyDiv = document.createElement("div");
           let nowyPrzycisk = document.createElement("button");
-          nowyPrzycisk.innerHTML = item.data;
+          nowyPrzycisk.innerHTML = "Pomiar z " + item.data;
           nowyDiv.appendChild(nowyPrzycisk);
           historiaElement.appendChild(nowyDiv);
           nowyPrzycisk.addEventListener("click", function () {
@@ -116,8 +118,6 @@
         let wzrostElement = document.querySelector(".wzrost");
         let waga = parseFloat(wagaElement.value);
         let wzrost = parseFloat(wzrostElement.value);
-        let komunikat1 = document.querySelector(".komunikat1");
-        let komunikat2 = document.querySelector(".komunikat2");
 
         let wagaOk = false;
         let wzrostOk = false;
@@ -137,6 +137,7 @@
           twojWzrost.innerHTML = "";
           twojaWaga.innerHTML = "";
           twojeBMI.innerHTML = "";
+          komunikat2.innerHTML = "";
         } else {
           twojaWaga.innerHTML = waga + " kg";
           wagaOk = true;
@@ -149,6 +150,7 @@
           twojWzrost.innerHTML = "";
           twojaWaga.innerHTML = "";
           twojeBMI.innerHTML = "";
+          komunikat2.innerHTML = "";
         } else {
           twojWzrost.innerHTML = wzrost + " cm";
           wzrostOk = true;
@@ -189,7 +191,7 @@
           }
           wagaElement.value = "";
           wzrostElement.value = "";
-          nowyPrzycisk.innerHTML = data;
+          nowyPrzycisk.innerHTML = " Pomiar z " + data;
           nowyDiv.appendChild(nowyPrzycisk);
           historiaElement.appendChild(nowyDiv);
           nowyPrzycisk.addEventListener("click", function () {
@@ -211,7 +213,7 @@
           sumaBMI = sumaBMI + item.BMI;
         }
         sredniaBMI = sumaBMI / historia.length;
-        sredniaBMIelement.innerHTML = sredniaBMI.toFixed(2);
+        sredniaBMIelement.innerHTML = sredniaBMI;
         console.log(sredniaBMI);
 
         localStorage.setItem("historiaBMI", JSON.stringify(historia));
